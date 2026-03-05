@@ -1,0 +1,218 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum InventoryCategory {
+  EQUIPMENT
+  FURNITURE
+  BOOK
+  DOCUMENTS
+  OTHER
+}
+
+model User {
+  id            Int              @id @default(autoincrement())
+  email         String           @unique
+  name          String           @unique
+  passwordHash  String?
+  role          UserRole         @default(USER)
+  isBlocked     Boolean          @default(false)
+  avatarUrl     String?
+  provider      String?
+  providerId    String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  inventories       Inventory[]
+  accessGrants      InventoryAccess[]
+  ownedItems        Item[]
+  writeAccessItems  ItemWriteAccess[]
+  comments          Comment[]
+  likes             Like[]
+  userTags          UserTag[]
+  createdTags       Tag[]          @relation("TagCreator")
+
+  @@map("users")
+}
+
+model Inventory {
+  id              Int              @id @default(autoincrement())
+  title           String
+  description     String?          @db.Text
+  category        InventoryCategory @default(OTHER)
+  imageUrl        String?
+  isPublic        Boolean          @default(false)
+  creator         User             @relation(fields: [creatorId], references: [id])
+  creatorId       Int
+  version         Int              @default(0)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  // Custom string fields configuration (name = label, state = enabled/disabled)
+  customString1Name String?
+  customString1State Boolean @default(false)
+  customString1ShowInTable Boolean @default(false)
+  customString2Name String?
+  customString2State Boolean @default(false)
+  customString2ShowInTable Boolean @default(false)
+  customString3Name String?
+  customString3State Boolean @default(false)
+  customString3ShowInTable Boolean @default(false)
+
+  // Custom int fields configuration
+  customInt1Name String?
+  customInt1State Boolean @default(false)
+  customInt1ShowInTable Boolean @default(false)
+  customInt2Name String?
+  customInt2State Boolean @default(false)
+  customInt2ShowInTable Boolean @default(false)
+  customInt3Name String?
+  customInt3State Boolean @default(false)
+  customInt3ShowInTable Boolean @default(false)
+
+  // Custom bool fields configuration
+  customBool1Name String?
+  customBool1State Boolean @default(false)
+  customBool1ShowInTable Boolean @default(false)
+  customBool2Name String?
+  customBool2State Boolean @default(false)
+  customBool2ShowInTable Boolean @default(false)
+  customBool3Name String?
+  customBool3State Boolean @default(false)
+  customBool3ShowInTable Boolean @default(false)
+
+  // Custom ID format (simple pattern string)
+  customIdPattern String?
+
+  accessList      InventoryAccess[]
+  items           Item[]
+  tags            InventoryTag[]
+  comments        Comment[]
+
+  @@map("inventories")
+}
+
+model InventoryAccess {
+  userId    Int
+  inventoryId Int
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  inventory Inventory  @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+  @@id([userId, inventoryId])
+  @@map("inventory_access")
+}
+
+model Item {
+  id            Int       @id @default(autoincrement())
+  customId      String?
+  inventory     Inventory @relation(fields: [inventoryId], references: [id])
+  inventoryId   Int
+  creator       User      @relation(fields: [creatorId], references: [id])
+  creatorId     Int
+  version       Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Custom string field values
+  customString1 String?
+  customString2 String?
+  customString3 String?
+  
+  // Custom int field values
+  customInt1 Int?
+  customInt2 Int?
+  customInt3 Int?
+  
+  // Custom bool field values
+  customBool1 Boolean?
+  customBool2 Boolean?
+  customBool3 Boolean?
+
+  writeAccess     ItemWriteAccess[]
+  comments        Comment[]
+  likes           Like[]
+
+  @@unique([inventoryId, customId])
+  @@map("items")
+}
+
+model ItemWriteAccess {
+  userId  Int
+  itemId  Int
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item    Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@id([userId, itemId])
+  @@map("item_write_access")
+}
+
+model Comment {
+  id          Int       @id @default(autoincrement())
+  text        String    @db.Text
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    Int
+  inventory   Inventory? @relation(fields: [inventoryId], references: [id])
+  inventoryId Int?
+  item        Item?     @relation(fields: [itemId], references: [id])
+  itemId      Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("comments")
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId    Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, itemId])
+  @@map("likes")
+}
+
+model Tag {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  inventories InventoryTag[]
+  creator     User?     @relation("TagCreator", fields: [creatorId], references: [id])
+  creatorId   Int?
+  createdAt   DateTime  @default(now())
+
+  @@map("tags")
+}
+
+model InventoryTag {
+  inventoryId Int
+  tagId       Int
+  inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  tag         Tag       @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([inventoryId, tagId])
+  @@map("inventory_tags")
+}
+
+model UserTag {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  name      String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, name])
+  @@map("user_tags")
+}

@@ -1,0 +1,45 @@
+:root {
+  --bs-body-bg: #ffffff;
+  --bs-body-color: #212529;
+}
+
+[data-bs-theme="dark"] {
+  --bs-body-bg: #212529;
+  --bs-body-color: #f8f9fa;
+  --bs-card-bg: #2b3035;
+  --bs-card-border-color: #495057;
+  --bs-form-control-bg: #2b3035;
+  --bs-form-control-border-color: #495057;
+  --bs-form-control-color: #f8f9fa;
+  --bs-table-bg: #212529;
+  --bs-table-color: #f8f9fa;
+  --bs-table-border-color: #495057;
+  --bs-list-group-bg: #2b3035;
+  --bs-list-group-border-color: #495057;
+  --bs-list-group-color: #f8f9fa;
+  --bs-modal-bg: #2b3035;
+  --bs-modal-border-color: #495057;
+  --bs-modal-footer-border-color: #495057;
+  --bs-dropdown-bg: #2b3035;
+  --bs-dropdown-border-color: #495057;
+  --bs-dropdown-link-color: #f8f9fa;
+  --bs-dropdown-link-hover-bg: #343a40;
+}
+
+/* Отключаем плавные переходы для мгновенной смены темы */
+*, *::before, *::after {
+  transition: none !important;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+.card-img-top {
+  max-height: 230px;
+  min-height: 230px;
+}
