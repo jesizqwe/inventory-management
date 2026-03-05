@@ -62,10 +62,10 @@ export default function LoginPage() {
             </Button>
 
             <div className="text-center">
-              <a href={`${process.env.REACT_APP_API_URL || 'http://localhost:3000'}/auth/google`} className="btn btn-danger w-100 mb-2">
+              <a href={`${process.env.REACT_APP_API_URL}/auth/google`} className="btn btn-danger w-100 mb-2">
                 {t('auth.loginWithGoogle')}
               </a>
-              <a href={`${process.env.REACT_APP_API_URL || 'http://localhost:3000'}/auth/github`} className="btn btn-dark w-100 mb-3">
+              <a href={`${process.env.REACT_APP_API_URL}/auth/github`} className="btn btn-dark w-100 mb-3">
                 {t('auth.loginWithGithub')}
               </a>
             </div>
