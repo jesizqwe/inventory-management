@@ -3,12 +3,11 @@ import { useParams } from 'react-router-dom';
 import { Container, Tabs, Tab, Card, Spinner, ListGroup, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import { itemApi } from '../services/api';
+import { itemApi, userApi } from '../services/api';
 
 export default function ProfilePage() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
-  const { user } = useAuth();
   const [profileUser, setProfileUser] = useState<any>(null);
   const [ownedItems, setOwnedItems] = useState<any[]>([]);
   const [writeAccessItems, setWriteAccessItems] = useState<any[]>([]);
