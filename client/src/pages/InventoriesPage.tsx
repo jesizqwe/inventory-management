@@ -17,6 +17,7 @@ export default function InventoriesPage() {
 
   useEffect(() => {
     loadInventories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, category]);
 
   const loadInventories = async () => {

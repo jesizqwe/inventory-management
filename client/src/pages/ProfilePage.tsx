@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Container, Tabs, Tab, Card, Spinner, ListGroup, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import { itemApi, userApi } from '../services/api';
+import { itemApi } from '../services/api';
 
 export default function ProfilePage() {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +19,7 @@ export default function ProfilePage() {
     if (id) {
       loadProfile();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const loadProfile = async () => {
