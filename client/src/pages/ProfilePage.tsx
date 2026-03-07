@@ -30,7 +30,7 @@ export default function ProfilePage() {
     } finally {
       setLoading(false);
     }
-  }, [id, t]);
+  }, [id]);
 
   useEffect(() => {
     loadProfile();

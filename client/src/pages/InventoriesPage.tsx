@@ -24,7 +24,7 @@ export default function InventoriesPage() {
     } finally {
       setLoading(false);
     }
-  }, [search, category, t, i18n.language]);
+  }, [search, category]);
 
   useEffect(() => {
     loadInventories();
