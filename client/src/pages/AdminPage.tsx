@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Container, Table, Button, Spinner, Alert, Badge, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
@@ -13,12 +13,7 @@ export default function AdminPage() {
   const [selectedUsers, setSelectedUsers] = useState<Set<number>>(new Set());
   const [bulkActionLoading, setBulkActionLoading] = useState(false);
 
-  useEffect(() => {
-    loadUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     try {
       const res = await adminApi.getUsers();
       setUsers(res.data);
@@ -27,7 +22,11 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
   const toggleSelectUser = (id: number) => {
     setSelectedUsers(prev => {

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Tabs, Tab, Card, Spinner, ListGroup, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../contexts/AuthContext';
 import { itemApi, userApi } from '../services/api';
 
 export default function ProfilePage() {
@@ -14,14 +13,8 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('owned');
 
-  useEffect(() => {
-    if (id) {
-      loadProfile();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
+    if (!id) return;
     try {
       const userId = Number(id);
       const [userRes, ownedRes, writeRes] = await Promise.all([
@@ -37,7 +30,11 @@ export default function ProfilePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, t]);
+
+  useEffect(() => {
+    loadProfile();
+  }, [loadProfile]);
 
   if (loading) {
     return (

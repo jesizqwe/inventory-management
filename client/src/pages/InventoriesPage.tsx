@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Container, Row, Col, Card, Button, Spinner, Form } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -15,12 +15,7 @@ export default function InventoriesPage() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
 
-  useEffect(() => {
-    loadInventories();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, category]);
-
-  const loadInventories = async () => {
+  const loadInventories = useCallback(async () => {
     try {
       const res = await inventoryApi.getAll({ search, category: category || undefined });
       setInventories(res.data.inventories);
@@ -29,7 +24,11 @@ export default function InventoriesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search, category, t, i18n.language]);
+
+  useEffect(() => {
+    loadInventories();
+  }, [loadInventories]);
 
   if (loading) {
     return (
