@@ -1,4 +1,5 @@
-import { Controller, Post, Body, UseGuards, Request, Get } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Request, Get, Res, Redirect } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -44,13 +45,12 @@ export class AuthController {
 
   @UseGuards(AuthGuard('google'))
   @Get('google/callback')
-  async googleLoginCallback(@Request() req) {
+  @Redirect()
+  async googleLoginCallback(@Request() req, @Res() res: Response) {
     const result = await this.authService.validateOAuthUser(req.user);
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    // For production, the callback comes directly to the backend, then we redirect to frontend
-    return {
-      redirect: `${frontendUrl}/oauth/callback?token=${result.access_token}&user=${encodeURIComponent(JSON.stringify(result.user))}`,
-    };
+    const redirectUrl = `${frontendUrl}/oauth/callback?token=${result.access_token}&user=${encodeURIComponent(JSON.stringify(result.user))}`;
+    return { url: redirectUrl };
   }
 
   @UseGuards(AuthGuard('github'))
@@ -61,11 +61,11 @@ export class AuthController {
 
   @UseGuards(AuthGuard('github'))
   @Get('github/callback')
-  async githubLoginCallback(@Request() req) {
+  @Redirect()
+  async githubLoginCallback(@Request() req, @Res() res: Response) {
     const result = await this.authService.validateOAuthUser(req.user);
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    return {
-      redirect: `${frontendUrl}/oauth/callback?token=${result.access_token}&user=${encodeURIComponent(JSON.stringify(result.user))}`,
-    };
+    const redirectUrl = `${frontendUrl}/oauth/callback?token=${result.access_token}&user=${encodeURIComponent(JSON.stringify(result.user))}`;
+    return { url: redirectUrl };
   }
 }
