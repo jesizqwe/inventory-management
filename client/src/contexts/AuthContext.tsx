@@ -14,6 +14,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, name: string, password: string) => Promise<void>;
   logout: () => void;
+  loginWithGoogle: () => void;
+  loginWithGithub: () => void;
   isLoading: boolean;
   isAdmin: boolean;
 }
@@ -77,10 +79,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const loginWithGoogle = () => {
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+    window.location.href = `${apiUrl}/auth/google`;
+  };
+
+  const loginWithGithub = () => {
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+    window.location.href = `${apiUrl}/auth/github`;
+  };
+
   const isAdmin = user?.role === 'ADMIN';
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout, isLoading, isAdmin }}>
+    <AuthContext.Provider value={{ user, token, login, register, logout, loginWithGoogle, loginWithGithub, isLoading, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

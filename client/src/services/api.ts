@@ -19,7 +19,13 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Handle redirect from OAuth callbacks
+    if (response.data?.redirect) {
+      window.location.href = response.data.redirect;
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       const currentPath = window.location.pathname;
@@ -39,6 +45,8 @@ export const authApi = {
   register: (email: string, name: string, password: string) =>
     api.post('/auth/register', { email, name, password }),
   getProfile: () => api.get('/auth/me'),
+  googleLogin: () => api.get('/auth/google'),
+  githubLogin: () => api.get('/auth/github'),
 };
 
 export const userApi = {

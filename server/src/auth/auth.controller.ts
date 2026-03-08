@@ -45,7 +45,12 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   @Get('google/callback')
   async googleLoginCallback(@Request() req) {
-    return this.authService.validateOAuthUser(req.user);
+    const result = await this.authService.validateOAuthUser(req.user);
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    // For production, the callback comes directly to the backend, then we redirect to frontend
+    return {
+      redirect: `${frontendUrl}/oauth/callback?token=${result.access_token}&user=${encodeURIComponent(JSON.stringify(result.user))}`,
+    };
   }
 
   @UseGuards(AuthGuard('github'))
@@ -57,6 +62,10 @@ export class AuthController {
   @UseGuards(AuthGuard('github'))
   @Get('github/callback')
   async githubLoginCallback(@Request() req) {
-    return this.authService.validateOAuthUser(req.user);
+    const result = await this.authService.validateOAuthUser(req.user);
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    return {
+      redirect: `${frontendUrl}/oauth/callback?token=${result.access_token}&user=${encodeURIComponent(JSON.stringify(result.user))}`,
+    };
   }
 }

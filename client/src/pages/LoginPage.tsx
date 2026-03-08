@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginPage() {
   const { t } = useTranslation();
-  const { login } = useAuth();
+  const { login, loginWithGoogle, loginWithGithub } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -62,12 +62,12 @@ export default function LoginPage() {
             </Button>
 
             <div className="text-center">
-              <a href={`${process.env.REACT_APP_API_URL}/auth/google`} className="btn btn-danger w-100 mb-2">
+              <Button variant="danger" onClick={loginWithGoogle} className="w-100 mb-2">
                 {t('auth.loginWithGoogle')}
-              </a>
-              <a href={`${process.env.REACT_APP_API_URL}/auth/github`} className="btn btn-dark w-100 mb-3">
+              </Button>
+              <Button variant="dark" onClick={loginWithGithub} className="w-100 mb-3">
                 {t('auth.loginWithGithub')}
-              </a>
+              </Button>
             </div>
 
             <div className="text-center">

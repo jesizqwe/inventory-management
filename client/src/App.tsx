@@ -13,6 +13,7 @@ import SearchPage from './pages/SearchPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminPage from './pages/AdminPage';
 import CreateInventoryPage from './pages/CreateInventoryPage';
+import OAuthCallback from './pages/OAuthCallback';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './i18n';
 
@@ -24,6 +25,7 @@ function AppContent() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/oauth/callback" element={<OAuthCallback />} />
         <Route path="/inventories" element={<InventoriesPage />} />
         <Route path="/inventory/:id" element={<InventoryDetailPage />} />
         <Route path="/inventory/create" element={<CreateInventoryPage />} />
