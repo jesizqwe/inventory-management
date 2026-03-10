@@ -8,19 +8,29 @@ export default function OAuthCallback() {
 
   useEffect(() => {
     const token = searchParams.get('token');
-    const user = searchParams.get('user');
+    const userParam = searchParams.get('user');
 
-    if (token && user) {
+    console.log('OAuth callback - token:', token ? 'present' : 'missing');
+    console.log('OAuth callback - user param:', userParam);
+
+    if (token && userParam) {
       try {
+        const decodedUser = decodeURIComponent(userParam);
+        console.log('OAuth callback - decoded user:', decodedUser);
+        const userObj = JSON.parse(decodedUser);
+        console.log('OAuth callback - parsed user object:', userObj);
+
         localStorage.setItem('token', token);
-        localStorage.setItem('user', decodeURIComponent(user));
+        localStorage.setItem('user', JSON.stringify(userObj));
+        console.log('OAuth callback - saved to localStorage');
+
         navigate('/');
       } catch (err) {
         console.error('Failed to save auth data:', err);
         navigate('/login');
       }
     } else {
-      // Redirect to login if no token
+      console.error('OAuth callback - missing token or user');
       navigate('/login');
     }
   }, [searchParams, navigate]);
