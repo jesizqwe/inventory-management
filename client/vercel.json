@@ -5,7 +5,11 @@
       "destination": "https://inventory-management-51zr.onrender.com/$1"
     },
     {
-      "source": "/((?!.*\\..*).*)",
+      "source": "/oauth/callback",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/:path*",
       "destination": "/index.html"
     }
   ],
