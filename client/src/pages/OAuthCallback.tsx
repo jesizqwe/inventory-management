@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Container, Spinner, Alert, Card } from 'react-bootstrap';
+import { Container, Spinner, Card } from 'react-bootstrap';
 
 export default function OAuthCallback() {
   const [searchParams] = useSearchParams();
