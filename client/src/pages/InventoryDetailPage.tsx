@@ -523,7 +523,7 @@ export default function InventoryDetailPage() {
         </Tab>
 
         <Tab eventKey="customFields" title={t('customFields.title')}>
-          {canEdit ? (
+          {canWrite ? (
             <Card>
               <Card.Body>
                 <Card.Title>{t('customFields.title')}</Card.Title>
@@ -555,7 +555,7 @@ export default function InventoryDetailPage() {
         </Tab>
 
         <Tab eventKey="settings" title={t('inventory.settings')}>
-          {canEdit ? (
+          {canWrite ? (
             <Card>
               <Card.Body>
                 <Card.Title>{t('inventory.settings')}</Card.Title>
