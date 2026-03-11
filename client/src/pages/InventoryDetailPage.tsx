@@ -55,6 +55,8 @@ export default function InventoryDetailPage() {
     isPublic: false,
   });
   const [savingInventory, setSavingInventory] = useState(false);
+  const [accessEmail, setAccessEmail] = useState('');
+  const [addingAccess, setAddingAccess] = useState(false);
 
   const loadInventory = useCallback(async () => {
     try {
@@ -212,6 +214,35 @@ export default function InventoryDetailPage() {
       alert(t('common.error'));
     } finally {
       setSavingInventory(false);
+    }
+  };
+
+  const handleAddAccess = async () => {
+    if (!id || !accessEmail.trim()) return;
+    setAddingAccess(true);
+    try {
+      const res = await inventoryApi.addAccess(Number(id), accessEmail.trim());
+      setInventory(res.data);
+      setAccessEmail('');
+      alert(t('common.saved'));
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.message || t('common.error'));
+    } finally {
+      setAddingAccess(false);
+    }
+  };
+
+  const handleRemoveAccess = async (userId: number) => {
+    if (!id) return;
+    if (!window.confirm(t('inventory.confirmRemoveAccess'))) return;
+    try {
+      const res = await inventoryApi.removeAccess(Number(id), userId);
+      setInventory(res.data);
+      alert(t('common.saved'));
+    } catch (err) {
+      console.error(err);
+      alert(t('common.error'));
     }
   };
 
@@ -597,14 +628,82 @@ export default function InventoryDetailPage() {
 
         <Tab eventKey="access" title={t('inventory.access')}>
           {canEdit ? (
-            <div>{t('inventory.accessControl')}</div>
+            <Card>
+              <Card.Body>
+                <Card.Title>{t('inventory.accessControl')}</Card.Title>
+                <Card.Text className="text-muted mb-4">{t('inventory.accessControlDescription')}</Card.Text>
+
+                <Form className="mb-4">
+                  <Form.Group className="mb-3">
+                    <Form.Label>{t('inventory.addAccessByEmail')}</Form.Label>
+                    <div className="d-flex gap-2">
+                      <Form.Control
+                        type="email"
+                        placeholder={t('inventory.emailPlaceholder')}
+                        value={accessEmail}
+                        onChange={(e) => setAccessEmail(e.target.value)}
+                        disabled={addingAccess}
+                      />
+                      <Button variant="primary" onClick={handleAddAccess} disabled={addingAccess || !accessEmail.trim()}>
+                        {addingAccess ? t('common.loading') : t('inventory.grantAccess')}
+                      </Button>
+                    </div>
+                  </Form.Group>
+                </Form>
+
+                <h5 className="mb-3">{t('inventory.usersWithAccess')}</h5>
+                <Table striped bordered hover responsive>
+                  <thead>
+                    <tr>
+                      <th>{t('admin.name')}</th>
+                      <th>{t('admin.email')}</th>
+                      <th>{t('inventory.accessType')}</th>
+                      <th>{t('admin.actions')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{inventory.creator?.name || '-'}</td>
+                      <td>{inventory.creator?.email || '-'}</td>
+                      <td>
+                        <span className="badge bg-primary">{t('inventory.owner')}</span>
+                      </td>
+                      <td>-</td>
+                    </tr>
+                    {inventory.accessList && inventory.accessList.length > 0 ? (
+                      inventory.accessList.map((access: any) => (
+                        <tr key={access.userId}>
+                          <td>{access.user?.name || '-'}</td>
+                          <td>{access.user?.email || '-'}</td>
+                          <td>
+                            <span className="badge bg-success">{t('inventory.hasAccess')}</span>
+                          </td>
+                          <td>
+                            <Button
+                              variant="outline-danger"
+                              size="sm"
+                              onClick={() => handleRemoveAccess(access.userId)}
+                              disabled={user?.id === access.userId}
+                            >
+                              {t('inventory.revokeAccess')}
+                            </Button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={4} className="text-center text-muted">
+                          {t('inventory.noUsersWithAccess')}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </Card.Body>
+            </Card>
           ) : (
             <div>{t('inventory.noAccessControl')}</div>
           )}
-        </Tab>
-
-        <Tab eventKey="statistics" title={t('inventory.statistics')}>
-          <div>{t('inventory.statisticsContent')}</div>
         </Tab>
       </Tabs>
     </Container>
