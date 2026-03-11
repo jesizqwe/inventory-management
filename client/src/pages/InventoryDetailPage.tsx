@@ -301,8 +301,9 @@ export default function InventoryDetailPage() {
 
   const isOwner = inventory.creatorId === user?.id;
   const hasWriteAccess = inventory.accessList?.some((access: any) => access.userId === user?.id);
-  const canEdit = isOwner || isAdmin;
-  const canWrite = canEdit || inventory.isPublic || hasWriteAccess;
+  const canEdit = isOwner || isAdmin; // Can delete inventory
+  const canWrite = canEdit || hasWriteAccess || inventory.isPublic; // Can add/edit/delete items
+  const canEditSettings = canEdit || hasWriteAccess; // Can edit settings and custom fields
 
   // Get enabled fields for display
   const enabledFields = Object.entries(customFields)
@@ -523,7 +524,7 @@ export default function InventoryDetailPage() {
         </Tab>
 
         <Tab eventKey="customFields" title={t('customFields.title')}>
-          {canWrite ? (
+          {canEditSettings ? (
             <Card>
               <Card.Body>
                 <Card.Title>{t('customFields.title')}</Card.Title>
@@ -555,7 +556,7 @@ export default function InventoryDetailPage() {
         </Tab>
 
         <Tab eventKey="settings" title={t('inventory.settings')}>
-          {canWrite ? (
+          {canEditSettings ? (
             <Card>
               <Card.Body>
                 <Card.Title>{t('inventory.settings')}</Card.Title>

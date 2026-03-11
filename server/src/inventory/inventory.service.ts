@@ -53,6 +53,40 @@ export class InventoryService {
     return inventory;
   }
 
+  private async checkSettingsAccess(
+    inventoryId: number,
+    userId: number,
+    userRole: UserRole,
+  ): Promise<Inventory> {
+    const inventory = await this.prisma.inventory.findUnique({
+      where: { id: inventoryId },
+      include: { accessList: true },
+    });
+
+    if (!inventory) {
+      throw new NotFoundException('Inventory not found');
+    }
+
+    if (userRole === UserRole.ADMIN) {
+      return inventory;
+    }
+
+    if (inventory.creatorId === userId) {
+      return inventory;
+    }
+
+    // Check if user has explicit access (not just isPublic)
+    const hasExplicitAccess = inventory.accessList.some(
+      (access) => access.userId === userId,
+    );
+
+    if (!hasExplicitAccess) {
+      throw new ForbiddenException('No access to edit inventory settings');
+    }
+
+    return inventory;
+  }
+
   async findAll(query?: {
     search?: string;
     category?: InventoryCategory;
@@ -185,7 +219,7 @@ export class InventoryService {
     userRole: UserRole,
     dto: any,
   ) {
-    await this.checkAccess(id, userId, userRole, true);
+    await this.checkSettingsAccess(id, userId, userRole);
 
     const updateData: any = { ...dto };
     delete updateData.tagIds;
