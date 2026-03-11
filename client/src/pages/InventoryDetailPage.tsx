@@ -300,8 +300,9 @@ export default function InventoryDetailPage() {
   }
 
   const isOwner = inventory.creatorId === user?.id;
+  const hasWriteAccess = inventory.accessList?.some((access: any) => access.userId === user?.id);
   const canEdit = isOwner || isAdmin;
-  const canWrite = canEdit || inventory.isPublic;
+  const canWrite = canEdit || inventory.isPublic || hasWriteAccess;
 
   // Get enabled fields for display
   const enabledFields = Object.entries(customFields)
