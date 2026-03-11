@@ -122,14 +122,15 @@ export default function AdminPage() {
       {error && <Alert variant="danger">{error}</Alert>}
 
       {/* Bulk Actions Toolbar */}
-      <div className="d-flex justify-content-between align-items-center mb-3 p-3 rounded" data-bs-theme="inherit">
-        <span className="text-muted">
+      <div className="d-flex flex-wrap justify-content-between align-items-center mb-3 p-3 rounded" data-bs-theme="inherit">
+        <span className="text-muted mb-2 mb-md-0">
           {t('admin.selected', { count: selectedUsers.size })}
         </span>
 
-        <div className="d-flex gap-2">
+        <div className="d-flex flex-wrap gap-2">
           <Button
             variant="warning"
+            size="sm"
             disabled={selectedUsers.size === 0 || bulkActionLoading}
             onClick={() => handleBulkAction('block')}
           >
@@ -137,6 +138,7 @@ export default function AdminPage() {
           </Button>
           <Button
             variant="success"
+            size="sm"
             disabled={selectedUsers.size === 0 || bulkActionLoading}
             onClick={() => handleBulkAction('unblock')}
           >
@@ -144,6 +146,7 @@ export default function AdminPage() {
           </Button>
           <Button
             variant="outline-success"
+            size="sm"
             disabled={selectedUsers.size === 0 || bulkActionLoading}
             onClick={() => handleBulkAction('promote')}
           >
@@ -151,6 +154,7 @@ export default function AdminPage() {
           </Button>
           <Button
             variant="outline-danger"
+            size="sm"
             disabled={selectedUsers.size === 0 || bulkActionLoading}
             onClick={() => handleBulkAction('demote')}
           >
@@ -158,6 +162,7 @@ export default function AdminPage() {
           </Button>
           <Button
             variant="danger"
+            size="sm"
             disabled={selectedUsers.size === 0 || bulkActionLoading}
             onClick={() => handleBulkAction('delete')}
           >
