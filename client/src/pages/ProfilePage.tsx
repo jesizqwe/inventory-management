@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Tabs, Tab, Card, Spinner, ListGroup, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { itemApi, userApi } from '../services/api';
 
 export default function ProfilePage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [profileUser, setProfileUser] = useState<any>(null);
   const [ownedItems, setOwnedItems] = useState<any[]>([]);
@@ -66,14 +67,18 @@ export default function ProfilePage() {
           <ListGroup>
             {ownedItems.map((item) => (
               <ListGroup.Item key={item.id}>
-                <div className="d-flex justify-content-between">
+                <div className="d-flex justify-content-between align-items-center">
                   <div>
                     <strong>{item.customId || `Item #${item.id}`}</strong>
                     <div className="text-muted small">
                       {t('profile.itemIn')} {item.inventory.title}
                     </div>
                   </div>
-                  <Button variant="outline-primary" size="sm">
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    onClick={() => navigate(`/inventory/${item.inventoryId}`)}
+                  >
                     {t('profile.view')}
                   </Button>
                 </div>
@@ -89,14 +94,18 @@ export default function ProfilePage() {
           <ListGroup>
             {writeAccessItems.map((item) => (
               <ListGroup.Item key={item.id}>
-                <div className="d-flex justify-content-between">
+                <div className="d-flex justify-content-between align-items-center">
                   <div>
                     <strong>{item.customId || `Item #${item.id}`}</strong>
                     <div className="text-muted small">
                       {t('profile.itemIn')} {item.inventory.title}
                     </div>
                   </div>
-                  <Button variant="outline-primary" size="sm">
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    onClick={() => navigate(`/inventory/${item.inventoryId}`)}
+                  >
                     {t('profile.view')}
                   </Button>
                 </div>
