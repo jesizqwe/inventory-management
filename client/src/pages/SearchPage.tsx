@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Container, Row, Col, Card, Spinner, Form, InputGroup, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';

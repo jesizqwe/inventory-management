@@ -20,7 +20,6 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => {
-    // Handle redirect from OAuth callbacks
     if (response.data?.redirect) {
       window.location.href = response.data.redirect;
     }

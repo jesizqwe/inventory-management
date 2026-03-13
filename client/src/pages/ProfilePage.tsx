@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Tabs, Tab, Card, Spinner, ListGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
