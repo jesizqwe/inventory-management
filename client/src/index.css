@@ -37,6 +37,12 @@ body {
 
 .App {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.App > .Routes-wrapper {
+  flex: 1;
 }
 
 .card-img-top {

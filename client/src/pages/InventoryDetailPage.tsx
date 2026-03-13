@@ -69,7 +69,6 @@ export default function InventoryDetailPage() {
       setItems(itemsRes.data);
       setComments(commentsRes.data);
 
-      // Load edit form data
       if (invRes.data) {
         setEditInventory({
           title: invRes.data.title || '',
@@ -80,7 +79,6 @@ export default function InventoryDetailPage() {
         });
       }
 
-      // Load custom fields configuration from inventory
       if (invRes.data) {
         setCustomFields({
           string1: {
@@ -301,15 +299,13 @@ export default function InventoryDetailPage() {
 
   const isOwner = inventory.creatorId === user?.id;
   const hasWriteAccess = inventory.accessList?.some((access: any) => access.userId === user?.id);
-  const canEdit = isOwner || isAdmin; // Can delete inventory
-  const canWrite = canEdit || hasWriteAccess || inventory.isPublic; // Can add/edit/delete items
-  const canEditSettings = canEdit || hasWriteAccess; // Can edit settings and custom fields
+  const canEdit = isOwner || isAdmin;
+  const canWrite = canEdit || hasWriteAccess || inventory.isPublic;
+  const canEditSettings = canEdit || hasWriteAccess;
 
-  // Get enabled fields for display
   const enabledFields = Object.entries(customFields)
     .filter(([_, config]) => config.enabled)
     .map(([key, config]) => {
-      // Convert 'string1' -> 'customString1', 'int1' -> 'customInt1', etc.
       const typeMap: Record<string, string> = {
         string: 'customString',
         int: 'customInt',

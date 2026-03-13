@@ -15,23 +15,27 @@ import CreateInventoryPage from './pages/CreateInventoryPage';
 import OAuthCallback from './pages/OAuthCallback';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './i18n';
+import Footer from './components/Footer';
 
 function AppContent() {
   return (
     <div className="App" data-bs-theme="inherit">
       <NavBar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/oauth/callback" element={<OAuthCallback />} />
-        <Route path="/inventories" element={<InventoriesPage />} />
-        <Route path="/inventory/:id" element={<InventoryDetailPage />} />
-        <Route path="/inventory/create" element={<CreateInventoryPage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/profile/:id" element={<ProfilePage />} />
-        <Route path="/admin" element={<AdminPage />} />
-      </Routes>
+      <div style={{ flex: 1 }}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/oauth/callback" element={<OAuthCallback />} />
+          <Route path="/inventories" element={<InventoriesPage />} />
+          <Route path="/inventory/:id" element={<InventoryDetailPage />} />
+          <Route path="/inventory/create" element={<CreateInventoryPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/profile/:id" element={<ProfilePage />} />
+          <Route path="/admin" element={<AdminPage />} />
+        </Routes>
+      </div>
+      <Footer />
     </div>
   );
 }
