@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Tabs, Tab, Card, Spinner, ListGroup, Button } from 'react-bootstrap';
+import { Container, Tabs, Tab, Card, Spinner, ListGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { itemApi, userApi } from '../services/api';
 
@@ -69,18 +69,16 @@ export default function ProfilePage() {
               <ListGroup.Item key={item.id}>
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
-                    <strong>{item.customId || `Item #${item.id}`}</strong>
+                    <strong
+                      style={{ cursor: 'pointer', color: '#0d6efd', textDecoration: 'underline' }}
+                      onClick={() => navigate(`/inventory/${item.inventoryId}`)}
+                    >
+                      {item.customId || `Item #${item.id}`}
+                    </strong>
                     <div className="text-muted small">
                       {t('profile.itemIn')} {item.inventory.title}
                     </div>
                   </div>
-                  <Button
-                    variant="outline-primary"
-                    size="sm"
-                    onClick={() => navigate(`/inventory/${item.inventoryId}`)}
-                  >
-                    {t('profile.view')}
-                  </Button>
                 </div>
               </ListGroup.Item>
             ))}
@@ -96,18 +94,16 @@ export default function ProfilePage() {
               <ListGroup.Item key={item.id}>
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
-                    <strong>{item.customId || `Item #${item.id}`}</strong>
+                    <strong
+                      style={{ cursor: 'pointer', color: '#0d6efd', textDecoration: 'underline' }}
+                      onClick={() => navigate(`/inventory/${item.inventoryId}`)}
+                    >
+                      {item.customId || `Item #${item.id}`}
+                    </strong>
                     <div className="text-muted small">
                       {t('profile.itemIn')} {item.inventory.title}
                     </div>
                   </div>
-                  <Button
-                    variant="outline-primary"
-                    size="sm"
-                    onClick={() => navigate(`/inventory/${item.inventoryId}`)}
-                  >
-                    {t('profile.view')}
-                  </Button>
                 </div>
               </ListGroup.Item>
             ))}
