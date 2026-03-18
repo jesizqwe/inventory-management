@@ -58,7 +58,9 @@ export default function ProfilePage() {
   }
 
   // Check if current user is viewing their own profile
-  const currentUserId = localStorage.getItem('id');
+  const userString = localStorage.getItem('user');
+  const currentUserId = userString ? JSON.parse(userString).id : null;
+
   const isOwnProfile = currentUserId === profileUser.id;
 
   console.log(currentUserId);
