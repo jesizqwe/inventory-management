@@ -54,12 +54,10 @@ export default function AdminPage() {
       return;
     }
 
-    // Confirm for delete action
     if (action === 'delete' && !window.confirm(t('admin.confirmDelete'))) {
       return;
     }
 
-    // Confirm for demote if user is demoting themselves
     if (action === 'demote' && selectedUsers.has(user?.id || -1)) {
       if (!window.confirm(t('admin.confirmDemoteSelf'))) {
         return;
@@ -121,7 +119,6 @@ export default function AdminPage() {
 
       {error && <Alert variant="danger">{error}</Alert>}
 
-      {/* Bulk Actions Toolbar */}
       <div className="d-flex flex-wrap justify-content-between align-items-center mb-3 p-3 rounded" data-bs-theme="inherit">
         <span className="text-muted mb-2 mb-md-0">
           {t('admin.selected', { count: selectedUsers.size })}

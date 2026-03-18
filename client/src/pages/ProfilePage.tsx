@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Tabs, Tab, Card, Spinner, ListGroup } from 'react-bootstrap';
+import { Container, Tabs, Tab, Card, Spinner, ListGroup, Button, Alert } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { itemApi, userApi } from '../services/api';
+import SalesforceFormModal from '../components/SalesforceFormModal';
 
 export default function ProfilePage() {
   const { id } = useParams<{ id: string }>();
@@ -13,6 +14,8 @@ export default function ProfilePage() {
   const [writeAccessItems, setWriteAccessItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('owned');
+  const [showSalesforceModal, setShowSalesforceModal] = useState(false);
+  const [salesforceMessage, setSalesforceMessage] = useState<string | null>(null);
 
   const loadProfile = useCallback(async () => {
     if (!id) return;
@@ -37,6 +40,11 @@ export default function ProfilePage() {
     loadProfile();
   }, [loadProfile]);
 
+  const handleSalesforceSuccess = () => {
+    setSalesforceMessage('Successfully created Account and Contact in Salesforce!');
+    setTimeout(() => setSalesforceMessage(null), 5000);
+  };
+
   if (loading) {
     return (
       <Container className="text-center mt-5">
@@ -49,16 +57,39 @@ export default function ProfilePage() {
     return <Container>User not found</Container>;
   }
 
+  // Check if current user is viewing their own profile
+  const currentUserId = localStorage.getItem('userId');
+  const isOwnProfile = currentUserId && String(currentUserId) === String(profileUser.id);
+
   return (
     <Container>
+      {salesforceMessage && (
+        <Alert variant="success" onClose={() => setSalesforceMessage(null)} dismissible>
+          {salesforceMessage}
+        </Alert>
+      )}
+
       <Card className="mb-4">
         <Card.Body>
-          <Card.Title>{profileUser.name}</Card.Title>
-          <Card.Text>
-            <strong>{t('profile.email')}:</strong> {profileUser.email}<br />
-            <strong>{t('profile.role')}:</strong> {profileUser.role}<br />
-            <strong>{t('profile.memberSince')}:</strong> {new Date(profileUser.createdAt).toLocaleDateString()}
-          </Card.Text>
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <Card.Title>{profileUser.name}</Card.Title>
+              <Card.Text>
+                <strong>{t('profile.email')}:</strong> {profileUser.email}<br />
+                <strong>{t('profile.role')}:</strong> {profileUser.role}<br />
+                <strong>{t('profile.memberSince')}:</strong> {new Date(profileUser.createdAt).toLocaleDateString()}
+              </Card.Text>
+            </div>
+            {isOwnProfile && (
+              <Button
+                variant="primary"
+                onClick={() => setShowSalesforceModal(true)}
+                className="ms-3"
+              >
+                📈 Connect to Salesforce
+              </Button>
+            )}
+          </div>
         </Card.Body>
       </Card>
 
@@ -113,6 +144,16 @@ export default function ProfilePage() {
           </ListGroup>
         </Tab>
       </Tabs>
+
+      {isOwnProfile && (
+        <SalesforceFormModal
+          show={showSalesforceModal}
+          onHide={() => setShowSalesforceModal(false)}
+          onSuccess={handleSalesforceSuccess}
+          userEmail={profileUser.email}
+          userName={profileUser.name}
+        />
+      )}
     </Container>
   );
 }

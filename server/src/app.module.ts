@@ -12,9 +12,15 @@ import { LikeModule } from './like/like.module';
 import { TagModule } from './tag/tag.module';
 import { SearchModule } from './search/search.module';
 import { FileModule } from './file/file.module';
+import { SalesforceModule } from './salesforce/salesforce.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     UserModule,
     AuthModule,
     AdminModule,
@@ -25,6 +31,7 @@ import { FileModule } from './file/file.module';
     TagModule,
     SearchModule,
     FileModule,
+    SalesforceModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

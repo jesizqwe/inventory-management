@@ -54,6 +54,16 @@ export const userApi = {
   getMe: () => api.get('/user/me'),
   updateProfile: (data: { name?: string; avatarUrl?: string }) =>
     api.patch('/user/me', data),
+  createSalesforceRecord: (data: {
+    firstName: string;
+    lastName: string;
+    email?: string;
+    phone?: string;
+    companyName?: string;
+    companyWebsite?: string;
+    description?: string;
+  }) => api.post('/user/salesforce/create', data),
+  getSalesforceStatus: () => api.get('/user/salesforce/status'),
 };
 
 export const adminApi = {
