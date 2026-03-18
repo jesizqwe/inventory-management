@@ -61,6 +61,9 @@ export default function ProfilePage() {
   const currentUserId = localStorage.getItem('userId');
   const isOwnProfile = String(currentUserId) === String(profileUser.id);
 
+  console.log(currentUserId);
+  console.log(profileUser.id);
+  
   return (
     <Container>
       {salesforceMessage && (
