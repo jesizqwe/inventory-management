@@ -32,11 +32,7 @@ export default function SalesforceFormModal({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SalesforceFormData>({
+  const {register, handleSubmit, formState: { errors },} = useForm<SalesforceFormData>({
     defaultValues: {
       email: userEmail || '',
     },
@@ -112,7 +108,7 @@ export default function SalesforceFormModal({
                 }
               })}
               isInvalid={!!errors.email}
-              placeholder={userEmail || 'your@email.com'}
+              placeholder="your@email.com"
             />
             <Form.Text className="text-muted">
               Your email from profile will be used if not specified
@@ -161,11 +157,6 @@ export default function SalesforceFormModal({
               placeholder="Additional information about you or your company"
             />
           </Form.Group>
-
-          <Alert variant="info" className="mb-0">
-            <strong>What happens next?</strong> This will create an Account and a 
-            linked Contact in Salesforce CRM for customer relationship management.
-          </Alert>
         </Modal.Body>
 
         <Modal.Footer>
