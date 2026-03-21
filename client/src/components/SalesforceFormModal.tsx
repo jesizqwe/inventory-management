@@ -77,7 +77,6 @@ export default function SalesforceFormModal({
               type="text"
               {...register('firstName', { required: 'First name is required' })}
               isInvalid={!!errors.firstName}
-              placeholder="Enter your first name"
             />
             <Form.Control.Feedback type="invalid">
               {errors.firstName?.message}
@@ -90,7 +89,6 @@ export default function SalesforceFormModal({
               type="text"
               {...register('lastName', { required: 'Last name is required' })}
               isInvalid={!!errors.lastName}
-              placeholder="Enter your last name"
             />
             <Form.Control.Feedback type="invalid">
               {errors.lastName?.message}
@@ -132,7 +130,6 @@ export default function SalesforceFormModal({
             <Form.Control
               type="text"
               {...register('companyName')}
-              placeholder="Your company name"
             />
             <Form.Text className="text-muted">
               Your name will be used if not specified

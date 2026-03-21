@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as jsforce from 'jsforce';
 import { ConfigService } from '@nestjs/config';
-import * as https from 'https';
 
 export interface SalesforceContactResult {
   id: string;
@@ -15,50 +14,41 @@ export interface SalesforceAccountResult {
   errors: string[];
 }
 
-interface SalesforceTokenResponse {
-  access_token: string;
-  instance_url: string;
-}
-
 @Injectable()
 export class SalesforceService {
   private readonly logger = new Logger(SalesforceService.name);
   private conn: jsforce.Connection | null = null;
-  private accessToken: string | null = null;
-  private instanceUrl: string | null = null;
 
   constructor(private configService: ConfigService) {}
 
   /**
-   * Authenticate with Salesforce using OAuth 2.0 Client Credentials Flow
+   * Authenticate with Salesforce using OAuth 2.0 Username-Password Flow
    */
   async authenticate(): Promise<void> {
     const clientId = this.configService.get<string>('SALESFORCE_CLIENT_ID');
     const clientSecret = this.configService.get<string>('SALESFORCE_CLIENT_SECRET');
+    const username = this.configService.get<string>('SALESFORCE_USERNAME');
+    const password = this.configService.get<string>('SALESFORCE_PASSWORD');
     const loginUrl = this.configService.get<string>('SALESFORCE_LOGIN_URL') || 'https://login.salesforce.com';
 
-    if (!clientId || !clientSecret) {
+    if (!clientId || !clientSecret || !username || !password) {
       throw new Error('Salesforce credentials are not configured');
     }
 
     try {
-      // Get access token using client credentials
-      const tokenResponse = await this.getClientCredentialsToken(
-        loginUrl,
-        clientId,
-        clientSecret,
-      );
-
-      this.accessToken = tokenResponse.access_token;
-      this.instanceUrl = tokenResponse.instance_url;
-
-      // Create connection with the access token
+      // Create connection using jsforce with username/password flow
       this.conn = new jsforce.Connection({
-        instanceUrl: this.instanceUrl,
-        accessToken: this.accessToken,
+        oauth2: {
+          loginUrl,
+          clientId,
+          clientSecret,
+        },
       });
 
+      await this.conn.login(username, password);
+
       this.logger.log('Successfully authenticated with Salesforce');
+      this.logger.log(`Instance URL: ${this.conn.instanceUrl}`);
     } catch (error: any) {
       this.logger.error('Failed to authenticate with Salesforce', error);
       throw new Error(`Salesforce authentication failed: ${error.message}`);
@@ -66,51 +56,10 @@ export class SalesforceService {
   }
 
   /**
-   * Get access token using Client Credentials Flow
-   */
-  private async getClientCredentialsToken(
-    loginUrl: string,
-    clientId: string,
-    clientSecret: string,
-  ): Promise<SalesforceTokenResponse> {
-    return new Promise((resolve, reject) => {
-      const url = `${loginUrl}/services/oauth2/token`;
-      const body = `grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}`;
-
-      const req = https.request(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Content-Length': body.length,
-        },
-      }, (res) => {
-        let data = '';
-        res.on('data', (chunk) => data += chunk);
-        res.on('end', () => {
-          try {
-            const response = JSON.parse(data);
-            if (response.access_token) {
-              resolve(response);
-            } else {
-              reject(new Error(response.error_description || 'No access token received'));
-            }
-          } catch (e) {
-            reject(new Error(`Invalid response: ${data}`));
-          }
-        });
-      });
-
-      req.on('error', reject);
-      req.write(body);
-      req.end();
-    });
-  }
-
-  /**
    * Get or create connection
    */
   private async getConnection(): Promise<jsforce.Connection> {
-    if (!this.conn || !this.accessToken) {
+    if (!this.conn) {
       await this.authenticate();
     }
     return this.conn!;
